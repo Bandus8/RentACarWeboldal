@@ -12,24 +12,78 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <style>
+            
+            .clickable-box {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .clickable-box:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            }
+            .clickable-box img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.3s ease;
+                border-radius: 5px;
+            }
+            .clickable-box:hover img {
+                transform: scale(1.1); 
+            }
+            .clickable-box .text-content {
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            .clickable-box:hover .text-content {
+                transform: scale(0.95); 
+                opacity: 0.9; 
+            }
+            .clickable-box h5, .clickable-box p {
+                color: #000; 
+            }
+            .navbar .nav-link,
+            .navbar .dropdown-item {
+                transition: transform 0.3s ease, background-color 0.3s ease;
+                border-radius: 10px; 
+            }
+        
+            
+            .navbar .nav-link:hover,
+            .navbar  {
+                transform: scale(1.1); 
+                background-color: rgba(255, 255, 255, 0.1); 
+                color: #f8f9fa; 
+                
+                
+            }
+            .dropdown-item:hover
+            {
+                transform: scale(1.0); 
+                background-color: rgb(168, 168, 168); 
+                color: #000000; 
+
+            }
+        </style>
     </head>
     <body>
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#!">Rent A Car</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <a class="navbar-brand" href="index.html"><img src="images/logo.png" width="75px"> Rent A Car</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="index.html">Főoldal</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="rolunk.html">Rólunk</a></li>
-                        <li class="nav-item dropdown">
+                        <li class="nav-item me-5"><a class="nav-link " aria-current="page" href="index.html">Főoldal</a></li>
+                        <li class="nav-item me-5"><a class="nav-link active" href="rolunk.html">Rólunk</a></li>
+                        <li class="nav-item dropdown me-5">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Autóink</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="hetkoznapi.html">Hétköznapi Autók</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#!">Sport Autók</a></li>
-                                <li><a class="dropdown-item" href="#!">Luxus Autók</a></li>
+                                <li><a class="dropdown-item" href="sport.html">Sport Autók</a></li>
+                                <li><a class="dropdown-item" href="luxus.html">Luxus Autók</a></li>
                             </ul>
                         </li>
                     </ul>    
@@ -46,38 +100,48 @@
             </div>
         </header>
         <!-- Section-->
-        <section class="py-5 bg-white" id="rolunk">
+        <section class="py-5 bg-light">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h2 class="mb-4">Rólunk</h2>
-                        <p class="mb-4">
-                            Fedezd fel a világot saját tempódban a Rent A Car autóbérlő szolgáltatásával!
-                  Legyen szó városnézésről, üzleti útról vagy egy felejthetetlen hétvégi kirándulásról,
-                  nálunk mindenki megtalálja a számára legmegfelelőbb járművet.
-                        </p>
-                    </div>
+                <div class="text-center mb-5 text-white">
+                    <h2>Rólunk</h2>
+                    <p>Fedezze fel a világot saját tempójában a Rent A Car autóbérlő szolgáltatásával!
+                        Legyen szó városnézésről, üzleti útról vagy egy felejthetetlen hétvégi kirándulásról,
+                        nálunk mindenki megtalálja a számára legmegfelelőbb járművet.</p>
                 </div>
-                <div class="row text-center">
-                    <!-- Képes oszlopok -->
-                    <div class="col-md-4 mb-4">
-                        <img src="images/Valasztek.jpg" class="rounded-circle mb-3" alt="Csapatunk" width="300">
-                        <h5>Választék</h5>
-                        <p>• Széles választék: Modern és megbízható autók minden igényhez.
-                            Kicsi, kompakt modellek, tágas családi autók vagy prémium járművek
-                            nálunk mindenki megtalálja a számára ideális megoldást.</p>
+                <div class="row g-4">
+                    
+                    <div class="col-md-4">
+                        <a href="#" class="clickable-box bg-white p-4 text-center rounded border d-block">
+                            <img src="images/Valasztek.jpg" alt="Választék" title="Választék">
+                            <div class="text-content mt-3">
+                                <h5>Választék</h5>
+                                <p>Modern és megbízható autók minden igényhez.
+                                    Kicsi, tágas családi autók vagy prémium járművek
+                                    nálunk mindenki megtalálja az ideális megoldást.</p>
+                            </div>
+                        </a>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <img src="images/foglalas.jpg" class="rounded-circle mb-3" alt="Céljaink" width="300">
-                        <h5>Foglalás</h5>
-                        <p>• Könnyű foglalás: Online felületünkön gyorsan és egyszerűen lefoglalhatod autódat.
-                            Néhány kattintás, és már indulhatsz is!</p>
+                   
+                    <div class="col-md-4">
+                        <a href="#" class="clickable-box bg-white p-4 text-center rounded border d-block">
+                            <img src="images/foglalas.jpg" alt="Foglalás" title="Foglalás" >
+                            <div class="text-content mt-3">
+                                <h5>Foglalás</h5>
+                                <p>Könnyű foglalás: Online felületünkön gyorsan és egyszerűen lefoglalhatod autódat.
+                                    Néhány kattintás, és már indulhatsz is!</p>
+                            </div>
+                        </a>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <img src="images/Ugyfel.jpg" class="rounded-circle mb-3" alt="Értékeink" width="300">
-                        <h5>ügyfélszolgálat</h5>
-                        <p>• Kiváló ügyfélszolgálat: Segítőkész csapatunk mindig készen áll, hogy válaszoljon kérdéseidre,
-                            és biztosítsa a zökkenőmentes bérlést.</p>
+                   
+                    <div class="col-md-4">
+                        <a href="#" class="clickable-box bg-white p-4 text-center rounded border d-block">
+                            <img src="images/Ugyfel.jpg" alt="Ügyfélszolgálat" title="Ügyfélszolgálat">
+                            <div class="text-content mt-3">
+                                <h5>Ügyfélszolgálat</h5>
+                                <p>Kiváló ügyfélszolgálat: Segítőkész csapatunk mindig készen áll, hogy válaszoljon kérdéseidre,
+                                    és biztosítsa a zökkenőmentes bérlést</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
