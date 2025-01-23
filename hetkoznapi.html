@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>RentACar</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#!">Rent A Car</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="index.html">Főoldal</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="rolunk.html">Rólunk</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Autóink</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="hetkoznapi.html">Hétköznapi Autók</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="sport.html">Sport Autók</a></li>
+                                <li><a class="dropdown-item" href="luxus.html">Luxus Autók</a></li>
+                            </ul>
+                        </li>
+                    </ul>    
+                </div>
+            </div>
+        </nav>
+        <!-- Header-->
+        <header class="bg-primary py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Hétköznapi Járműveink</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Hogy megbízhatóan juss el célodig</p>
+                </div>
+            </div>
+        </header>
+        <!-- Section-->
+        <section class="py-5 bg-light text-white">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="text-center mb-4">
+                            <h2>Kereső felület</h2>
+                            <p>Adja meg, amit keresni szeretne:</p>
+                        </div>
+                        <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Keresés..." aria-label="Keresés" aria-describedby="button-addon2">
+                                <button class="btn bg-primary text-white" type="button" id="button-addon2">Keresés</button>
+                            </div>
+                            <div class="row">
+                                <!-- Márka -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="brandFilter" class="form-label">Márka</label>
+                                    <select class="form-select" id="brandFilter">
+                                        <option selected>Válasszon...</option>
+                                        <option value="1">BMW</option>
+                                        <option value="2">Audi</option>
+                                        <option value="3">Toyota</option>
+                                    </select>
+                                </div>
+                                <!-- Évjárat -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="yearFilter" class="form-label">Évjárat</label>
+                                    <select class="form-select" id="yearFilter">
+                                        <option selected>Válasszon...</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2019">2019</option>
+                                    </select>
+                                </div>
+                                <!-- Üzemanyag fajta -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="fuelTypeFilter" class="form-label">Üzemanyag fajta</label>
+                                    <select class="form-select" id="fuelTypeFilter">
+                                        <option selected>Válasszon...</option>
+                                        <option value="benzin">Benzin</option>
+                                        <option value="dízel">Dízel</option>
+                                        <option value="hibrid">Hibrid</option>
+                                        <option value="elektromos">Elektromos</option>
+                                    </select>
+                                </div>
+                            </div>
+    
+                            <!-- Szűrés gomb -->
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn bg-primary text-white">Szűrés</button>
+                            </div>
+                        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-primary">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
