@@ -10830,3 +10830,49 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+/* Töltőképernyő stílus */
+#loading-screen {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: #343a40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+/* Forgó animáció */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(75, 0, 130.1);
+  border-top: 5px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* CSS animáció */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* Tartalom kezdő állapota */
+#content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* Amikor megjelenik */
+#content.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Töltőképernyő elrejtése */
+#loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+}

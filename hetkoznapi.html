@@ -12,6 +12,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <script src="script.js"></script>
         <style>
             
             .navbar .nav-link,
@@ -39,6 +40,10 @@
         </style>
     </head>
     <body>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
+        <div id="content">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container px-4 px-lg-5">
@@ -81,10 +86,6 @@
                             <p>Adja meg, amit keresni szeretne:</p>
                         </div>
                         <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Keresés..." aria-label="Keresés" aria-describedby="button-addon2">
-                                <button class="btn bg-primary text-white" type="button" id="button-addon2">Keresés</button>
-                            </div>
                             <div class="row">
                                 <!-- Márka -->
                                 <div class="col-md-4 mb-3">
@@ -139,5 +140,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+    </div>
     </body>
 </html>
