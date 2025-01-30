@@ -85,30 +85,42 @@
                             <h2>Kereső felület</h2>
                             <p>Adja meg, amit keresni szeretne:</p>
                         </div>
-                        <form>
+                        <form class="row justify-content-center"> 
                             <div class="row">
                                 <!-- Márka -->
-                                <div class="col-md-4 mb-3">
-                                    <label for="brandFilter" class="form-label">Márka</label>
-                                    <select class="form-select" id="brandFilter">
-                                        <option selected>Válasszon...</option>
-                                        <option value="1">BMW</option>
-                                        <option value="2">Audi</option>
-                                        <option value="3">Toyota</option>
+                                <div class="col-md-6">
+                                    <label for="brandSelect" class="form-label">Márka</label>
+                                    <select id="brandSelect" class="form-select">
+                                        <option value="" selected disabled>Válassz márkát</option>
+                                        <option value="Toyota">Toyota</option>
+                                        <option value="BMW">BMW</option>
+                                        <option value="Mercedes">Mercedes</option>
                                     </select>
                                 </div>
-                                <!-- Évjárat -->
-                                <div class="col-md-4 mb-3">
-                                    <label for="yearFilter" class="form-label">Évjárat</label>
-                                    <select class="form-select" id="yearFilter">
-                                        <option selected>Válasszon...</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2019">2019</option>
+                                
+                                <div class="col-md-6">
+                                    <label for="modelSelect" class="form-label">Modellek</label>
+                                    <select id="modelSelect" class="form-select" disabled>
+                                        <option value="" selected disabled>Előbb válassz egy márkát</option>
                                     </select>
                                 </div>
+                            </div>
+                                <div class="row">
+                                <!-- Évjárat - Mettől -->
+                                <div class="col-md-4">
+                                    <label for="yearFrom" class="form-label">Évjárat - Mettől</label>
+                                        <select id="yearFrom" class="form-select">
+                                        <option value="" selected disabled>Válassz kezdő évet</option>
+                                     </select>
+                                 </div>
+
+                                    <!-- Évjárat - Meddig -->
+                                    <div class="col-md-4">
+                                        <label for="yearTo" class="form-label">Évjárat - Meddig</label>
+                                        <select id="yearTo" class="form-select">
+                                            <option value="" selected disabled>Válassz végső évet</option>
+                                        </select>
+                                    </div>
                                 <!-- Üzemanyag fajta -->
                                 <div class="col-md-4 mb-3">
                                     <label for="fuelTypeFilter" class="form-label">Üzemanyag fajta</label>
@@ -120,7 +132,8 @@
                                         <option value="elektromos">Elektromos</option>
                                     </select>
                                 </div>
-                            </div>
+                            
+                        </div>
     
                             <!-- Szűrés gomb -->
                             <div class="text-center mt-4">
