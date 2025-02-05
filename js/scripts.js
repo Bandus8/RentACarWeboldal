@@ -5,6 +5,7 @@
 */
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
+//Töltőképernyő script
 document.addEventListener("window.onload", function() {
     setTimeout(() => {
         document.getElementById("loading-screen").style.display = "none";
@@ -21,69 +22,147 @@ document.addEventListener("DOMContentLoaded", function() {
     },700); // 2 másodperces várakozás után
 });
 
+//Autó keresés
 document.addEventListener("DOMContentLoaded", function () {
-    // Márkák és modellek összerendelése
-    const carModels = {
-        Toyota: ["Camry", "Corolla", "Yaris", "RAV4"],
-        BMW: ["3 Series", "5 Series", "X5", "Z4"],
-        Mercedes: ["A-Class", "C-Class", "E-Class", "GLA"]
-    };
+    const cars = [
+        { brand: "Toyota", model: "Corolla", year: 2020, fuel: "benzin", images: ["https://placehold.co/600x400", "https://placehold.co/600x400"] },
+        { brand: "Toyota", model: "Yaris", year: 2021, fuel: "hibrid", images: ["https://placehold.co/600x400", "https://placehold.co/600x400"] },
+        { brand: "BMW", model: "3 Series", year: 2019, fuel: "dízel", images: ["https://placehold.co/600x400", "https://placehold.co/600x400"] },
+        { brand: "Mercedes", model: "C Class", year: 2022, fuel: "benzin", images: ["https://placehold.co/600x400", "https://placehold.co/600x400"] }
+    ];
 
-    // HTML elemek lekérése
     const brandSelect = document.getElementById("brandSelect");
     const modelSelect = document.getElementById("modelSelect");
-    const yearFromSelect = document.getElementById("yearFrom");
-    const yearToSelect = document.getElementById("yearTo");
+    const yearFrom = document.getElementById("yearFrom");
+    const yearTo = document.getElementById("yearTo");
+    const fuelTypeFilter = document.getElementById("fuelTypeFilter");
+    const searchForm = document.getElementById("searchForm");
+    const resultsContainer = document.getElementById("resultsContainer");
+    const modal = new bootstrap.Modal(document.getElementById("carModal"));
+    const modalContent = document.getElementById("modalContent");
 
-    // Ha valamelyik nem található, ne fusson tovább a script
-    if (!brandSelect || !modelSelect || !yearFromSelect || !yearToSelect) {
-        console.error("Nem található valamelyik elem. Ellenőrizd az ID-kat!");
-        return;
-    }
-
-    // Évjárat generálása (2000-2024)
-    const currentYear = new Date().getFullYear();
-    for (let year = 2000; year <= currentYear; year++) {
-        let option1 = document.createElement("option");
-        let option2 = document.createElement("option");
-        option1.value = year;
-        option1.textContent = year;
-        option2.value = year;
-        option2.textContent = year;
-        yearFromSelect.appendChild(option1);
-        yearToSelect.appendChild(option2);
-    }
-
-    // Márka kiválasztás eseménykezelője
-    brandSelect.addEventListener("change", function() {
+    brandSelect.addEventListener("change", function () {
+        modelSelect.innerHTML = '<option value="" selected>Előbb válassz egy márkát</option>';
         const selectedBrand = brandSelect.value;
+        const models = [...new Set(cars.filter(car => car.brand === selectedBrand).map(car => car.model))];
+        models.forEach(model => {
+            const option = document.createElement("option");
+            option.value = model;
+            option.textContent = model;
+            modelSelect.appendChild(option);
+        });
+        modelSelect.disabled = models.length === 0;
+    });
 
-        // Modell lista frissítése
-        modelSelect.innerHTML = '<option value="" selected disabled>Válassz modellt</option>';
+    function filterCars() {
+        const brand = brandSelect.value;
+        const model = modelSelect.value;
+        const fromYear = parseInt(yearFrom.value) || 0;
+        const toYear = parseInt(yearTo.value) || 9999;
+        const fuel = fuelTypeFilter.value;
 
-        if (selectedBrand) {
-            modelSelect.disabled = false;
-            carModels[selectedBrand].forEach(model => {
-                const option = document.createElement("option");
-                option.value = model;
-                option.textContent = model;
-                modelSelect.appendChild(option);
-            });
+        return cars.filter(car =>
+            (!brand || car.brand === brand) &&
+            (!model || car.model === model) &&
+            (car.year >= fromYear && car.year <= toYear) &&
+            (!fuel || car.fuel === fuel)
+        );
+    }
+
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        resultsContainer.innerHTML = "";
+        const results = filterCars();
+
+        if (results.length === 0) {
+            resultsContainer.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
         } else {
-            modelSelect.disabled = true;
+            results.forEach(car => {
+                const card = document.createElement("div");
+                card.classList.add("col-md-4", "mb-3");
+                card.innerHTML = `
+                    <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card" 
+    data-brand="${car.brand}" 
+    data-model="${car.model}" 
+    data-year="${car.year}" 
+    data-fuel="${car.fuel}" 
+    data-images='${JSON.stringify(car.images)}'>
+
+    <div id="carousel-${car.brand}-${car.model}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+            ${car.images.map((img, index) => `
+                <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                    <img src="${img}" class="d-block w-100 rounded" alt="Car image">
+                </div>
+            `).join('')}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Előző</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Következő</span>
+        </button>
+    </div>
+
+    <div class="card-body">
+        <h5 class="card-title">${car.brand} ${car.model}</h5>
+        <p class="card-text">Évjárat: ${car.year}</p>
+        <p class="card-text">Üzemanyag: ${car.fuel}</p>
+    </div>
+</div>
+                `;
+                resultsContainer.appendChild(card);
+            });
         }
     });
 
-    // Biztosítsuk, hogy a "Mettől" év nem lehet nagyobb, mint a "Meddig" év
-    yearFromSelect.addEventListener("change", function() {
-        const minYear = parseInt(yearFromSelect.value);
-        yearToSelect.innerHTML = '<option value="" selected disabled>Válassz végső évet</option>';
-
-        for (let year = minYear; year <= currentYear; year++) {
-            let option = document.createElement("option");
-            option.value = year;
-            option.textContent = year;
-            yearToSelect.appendChild(option);
+    document.addEventListener("click", function (event) {
+        if (event.target.closest(".car-card")) {
+            const card = event.target.closest(".car-card");
+            const images = JSON.parse(card.dataset.images);
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h5 class="modal-title">${card.dataset.brand} ${card.dataset.model}</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            ${images.map((img, index) => `
+                                <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                    <img class="d-block w-100" src="${img}" alt="Car image">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </a>
+                    </div>
+                    <p><strong>Évjárat:</strong> ${card.dataset.year}</p>
+                    <p><strong>Üzemanyag:</strong> ${card.dataset.fuel}</p>
+                </div>
+            `;
+            modal.show();
         }
     });
+
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= 2000; year--) {
+        const optionFrom = document.createElement("option");
+        optionFrom.value = year;
+        optionFrom.textContent = year;
+        yearFrom.appendChild(optionFrom);
+
+        const optionTo = document.createElement("option");
+        optionTo.value = year;
+        optionTo.textContent = year;
+        yearTo.appendChild(optionTo);
+    }
+    
 });

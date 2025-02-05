@@ -12,52 +12,72 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
-        <script src="script.js"></script>
+        
+        <script src="script.js" defer></script>
         <style>
-            
+            .clickable-box {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .clickable-box:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            }
+            .clickable-box img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.3s ease;
+                border-radius: 5px;
+            }
+            .clickable-box:hover img {
+                transform: scale(1.1); 
+            }
+            .clickable-box .text-content {
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            .clickable-box:hover .text-content {
+                transform: scale(0.95); 
+                opacity: 0.9; 
+            }
+            .clickable-box h5, .clickable-box p {
+                color: #000; 
+            }
             .navbar .nav-link,
             .navbar .dropdown-item {
                 transition: transform 0.3s ease, background-color 0.3s ease;
                 border-radius: 10px; 
             }
-        
-            
             .navbar .nav-link:hover,
             .navbar  {
                 transform: scale(1.1); 
                 background-color: rgba(255, 255, 255, 0.1); 
                 color: #f8f9fa; 
-                
-                
             }
-            .dropdown-item:hover
-            {
+            .dropdown-item:hover {
                 transform: scale(1.0); 
                 background-color: rgb(168, 168, 168); 
                 color: #000000; 
-
+            }
+            #resultsTable {
+                display: none; /* Alapból rejtett */
             }
         </style>
     </head>
     <body>
-        <div id="loading-screen">
-            <div class="spinner"></div>
-        </div>
-        <div id="content">
-        <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="index.html"><img src="images/logo.png" width="75px"> Rent A Car</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item me-5"><a class="nav-link" aria-current="page" href="index.html">Főoldal</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="index.html">Főoldal</a></li>
                         <li class="nav-item me-5"><a class="nav-link" href="rolunk.html">Rólunk</a></li>
                         <li class="nav-item dropdown me-5">
-                            <a class="nav-link dropdown-toggle nav-link active" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Autóink</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="nav-link dropdown-toggle active" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown">Autóink</a>
+                            <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="hetkoznapi.html">Hétköznapi Autók</a></li>
                                 <li><a class="dropdown-item" href="sport.html">Sport Autók</a></li>
                                 <li><a class="dropdown-item" href="luxus.html">Luxus Autók</a></li>
@@ -67,93 +87,84 @@
                 </div>
             </div>
         </nav>
-        <!-- Header-->
         <header class="bg-primary py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Hétköznapi Járműveink</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">Hogy megbízhatóan juss el célodig</p>
-                </div>
+            <div class="container px-4 px-lg-5 my-5 text-center text-white">
+                <h1 class="display-4 fw-bolder">Hétköznapi Járműveink</h1>
+                <p class="lead fw-normal text-white-50">Hogy megbízhatóan juss el célodig</p>
             </div>
         </header>
-        <!-- Section-->
         <section class="py-5 bg-light text-white">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="text-center mb-4">
-                            <h2>Kereső felület</h2>
-                            <p>Adja meg, amit keresni szeretne:</p>
+                <div class="text-center mb-4">
+                    <h2>Kereső felület</h2>
+                    <p>Adja meg, amit keresni szeretne:</p>
+                </div>
+                <form class="row justify-content-center" id="searchForm"> 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="brandSelect" class="form-label">Márka</label>
+                            <select id="brandSelect" class="form-select">
+                                <option value="" selected>Válassz márkát</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="BMW">BMW</option>
+                                <option value="Mercedes">Mercedes</option>
+                            </select>
                         </div>
-                        <form class="row justify-content-center"> 
-                            <div class="row">
-                                <!-- Márka -->
-                                <div class="col-md-6">
-                                    <label for="brandSelect" class="form-label">Márka</label>
-                                    <select id="brandSelect" class="form-select">
-                                        <option value="" selected disabled>Válassz márkát</option>
-                                        <option value="Toyota">Toyota</option>
-                                        <option value="BMW">BMW</option>
-                                        <option value="Mercedes">Mercedes</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label for="modelSelect" class="form-label">Modellek</label>
-                                    <select id="modelSelect" class="form-select" disabled>
-                                        <option value="" selected disabled>Előbb válassz egy márkát</option>
-                                    </select>
-                                </div>
-                            </div>
-                                <div class="row">
-                                <!-- Évjárat - Mettől -->
-                                <div class="col-md-4">
-                                    <label for="yearFrom" class="form-label">Évjárat - Mettől</label>
-                                        <select id="yearFrom" class="form-select">
-                                        <option value="" selected disabled>Válassz kezdő évet</option>
-                                     </select>
-                                 </div>
-
-                                    <!-- Évjárat - Meddig -->
-                                    <div class="col-md-4">
-                                        <label for="yearTo" class="form-label">Évjárat - Meddig</label>
-                                        <select id="yearTo" class="form-select">
-                                            <option value="" selected disabled>Válassz végső évet</option>
-                                        </select>
-                                    </div>
-                                <!-- Üzemanyag fajta -->
-                                <div class="col-md-4 mb-3">
-                                    <label for="fuelTypeFilter" class="form-label">Üzemanyag fajta</label>
-                                    <select class="form-select" id="fuelTypeFilter">
-                                        <option selected>Válasszon...</option>
-                                        <option value="benzin">Benzin</option>
-                                        <option value="dízel">Dízel</option>
-                                        <option value="hibrid">Hibrid</option>
-                                        <option value="elektromos">Elektromos</option>
-                                    </select>
-                                </div>
-                            
+                        <div class="col-md-6">
+                            <label for="modelSelect" class="form-label">Modellek</label>
+                            <select id="modelSelect" class="form-select" disabled>
+                                <option value="" selected>Előbb válassz egy márkát</option>
+                            </select>
                         </div>
-    
-                            <!-- Szűrés gomb -->
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn bg-primary text-white">Szűrés</button>
-                            </div>
-                        
-                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="yearFrom" class="form-label">Évjárat - Mettől</label>
+                            <select id="yearFrom" class="form-select">
+                                <option value="" selected>Válassz kezdő évet</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="yearTo" class="form-label">Évjárat - Meddig</label>
+                            <select id="yearTo" class="form-select">
+                                <option value="" selected>Válassz végső évet</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="fuelTypeFilter" class="form-label">Üzemanyag fajta</label>
+                            <select class="form-select" id="fuelTypeFilter">
+                                <option value="" selected>Válasszon...</option>
+                                <option value="benzin">Benzin</option>
+                                <option value="dízel">Dízel</option>
+                                <option value="hibrid">Hibrid</option>
+                                <option value="elektromos">Elektromos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn bg-primary text-white">Szűrés</button>
+                    </div>
+                </form>
+                <div id="resultsContainer" class="row mt-4"></div>
+            </div>
+            <div class="modal fade" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark">
+                            <h5 class="modal-title" id="carModalLabel">Autó részletei</h5>
+                            <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                        </div>
+                        <div class="modal-body bg-primary" id="modalContent">
+                            <!-- Az autó részletei és képek ide kerülnek -->
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- Footer-->
-        <footer class="py-5 bg-primary">
-            <div class="container"><p class="m-0 text-center text-white">📞 Telefon: +36 20 364 1259 <br>🌐 Partnerünk: hasznaltauto.hu <br>📍 Cím: 7441 Magyaregres, Vöröshadsereg utca 6.  </p></div>
+        <footer class="py-5 bg-primary text-center text-white">
+            <p>📞 Telefon: +36 20 364 1259 <br>🌐 Partnerünk: hasznaltauto.hu <br>📍 Cím: 7441 Magyaregres, Vöröshadsereg utca 6.</p>
         </footer>
-        <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
-        
-    </div>
     </body>
 </html>
