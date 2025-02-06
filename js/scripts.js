@@ -96,11 +96,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `).join('')}
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="prev">
+        <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Előző</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="next">
+        <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Következő</span>
         </button>
@@ -119,6 +119,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.addEventListener("click", function (event) {
+        
+        if (event.target.closest(".carousel-btn")) {
+            event.stopPropagation();
+            return;
+        }
+    
+        // Ha egy autókártyára kattintottunk, akkor jelenjen meg a nagy nézet
         if (event.target.closest(".car-card")) {
             const card = event.target.closest(".car-card");
             const images = JSON.parse(card.dataset.images);
@@ -127,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h5 class="modal-title">${card.dataset.brand} ${card.dataset.model}</h5>
                 </div>
                 <div class="modal-body">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             ${images.map((img, index) => `
                                 <div class="carousel-item ${index === 0 ? 'active' : ''}">
@@ -135,11 +142,11 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
                             `).join('')}
                         </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                        <a class="carousel-control-prev" href="#carouselModal" role="button" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                        <a class="carousel-control-next" href="#carouselModal" role="button" data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </a>
@@ -151,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.show();
         }
     });
-
     const currentYear = new Date().getFullYear();
     for (let year = currentYear; year >= 2000; year--) {
         const optionFrom = document.createElement("option");
