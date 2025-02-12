@@ -73,45 +73,48 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         resultsContainer.innerHTML = "";
         const results = filterCars();
-
+    
         if (results.length === 0) {
             resultsContainer.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
         } else {
-            results.forEach(car => {
+            results.forEach((car, index) => {
+                const uniqueId = `carousel-${index}`; // Egyedi azonosító generálása minden autóhoz
+    
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
                     <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card" 
-    data-brand="${car.brand}" 
-    data-model="${car.model}" 
-    data-year="${car.year}" 
-    data-fuel="${car.fuel}" 
-    data-images='${JSON.stringify(car.images)}'>
-
-    <div id="carousel-${car.brand}-${car.model}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-        <div class="carousel-inner">
-            ${car.images.map((img, index) => `
-                <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                    <img src="${img}" class="d-block w-100 rounded" alt="Car image">
-                </div>
-            `).join('')}
-        </div>
-        <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Előző</span>
-        </button>
-        <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Következő</span>
-        </button>
-    </div>
-
-    <div class="card-body">
-        <h5 class="card-title">${car.brand} ${car.model}</h5>
-        <p class="card-text">Évjárat: ${car.year}</p>
-        <p class="card-text">Üzemanyag: ${car.fuel}</p>
-    </div>
-</div>
+                        data-brand="${car.brand}" 
+                        data-model="${car.model}" 
+                        data-year="${car.year}" 
+                        data-fuel="${car.fuel}" 
+                        data-images='${JSON.stringify(car.images)}'>
+    
+                        <!-- Egyedi carousel minden autóhoz -->
+                        <div id="${uniqueId}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                            <div class="carousel-inner">
+                                ${car.images.map((img, imgIndex) => `
+                                    <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+                                        <img src="${img}" class="d-block w-100 rounded" alt="Car image">
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#${uniqueId}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Előző</span>
+                            </button>
+                            <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#${uniqueId}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Következő</span>
+                            </button>
+                        </div>
+    
+                        <div class="card-body">
+                            <h5 class="card-title">${car.brand} ${car.model}</h5>
+                            <p class="card-text">Évjárat: ${car.year}</p>
+                            <p class="card-text">Üzemanyag: ${car.fuel}</p>
+                        </div>
+                    </div>
                 `;
                 resultsContainer.appendChild(card);
             });
