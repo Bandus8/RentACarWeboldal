@@ -13,7 +13,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         
-        <script src="script.js" defer></script>
+        <script src="js/scripts.js"defer></script>
         <style>
             .clickable-box {
                 transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -65,7 +65,11 @@
         </style>
     </head>
     <body>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
         <!--NavBar-->
+        <div id="content">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="index.html"><img src="images/logo.png" width="75px"> Rent A Car</a>
@@ -106,10 +110,7 @@
                         <div class="col-md-6">
                             <label for="brandSelect" class="form-label">Márka</label>
                             <select id="brandSelect" class="form-select">
-                                <option value="" selected>Válassz márkát</option>
-                                <option value="Toyota">Toyota</option>
-                                <option value="BMW">BMW</option>
-                                <option value="Mercedes">Mercedes</option>
+                               
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -136,10 +137,7 @@
                             <label for="fuelTypeFilter" class="form-label">Üzemanyag fajta</label>
                             <select class="form-select" id="fuelTypeFilter">
                                 <option value="" selected>Válasszon...</option>
-                                <option value="benzin">Benzin</option>
-                                <option value="dízel">Dízel</option>
-                                <option value="hibrid">Hibrid</option>
-                                <option value="elektromos">Elektromos</option>
+                                
                             </select>
                         </div>
                     </div>
@@ -169,5 +167,6 @@
         </footer>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="js/scripts.js"></script>
+        </div>
     </body>
 </html>
