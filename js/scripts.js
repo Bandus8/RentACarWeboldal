@@ -28,75 +28,95 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
-    const API_URL = "http://localhost:5005/cars"; // API végpont 
-    let cars = []; // Az összes autó tárolása
+    const brandSelect = document.getElementById("manufacturer");
+    const modelSelect = document.getElementById("model");
+    const fuelTypeSelect = document.getElementById("fuelType");
+    const filterButton = document.getElementById("filterButton");
+    const carList = document.getElementById("carList");
 
-    // HTML elemek lekérése
-    const brandSelect = document.getElementById("brandSelect");
-    const modelSelect = document.getElementById("modelSelect");
-    const yearFrom = document.getElementById("yearFrom");
-    const yearTo = document.getElementById("yearTo");
-    const fuelTypeFilter = document.getElementById("fuelTypeFilter");
-    const searchForm = document.getElementById("searchForm");
-    const resultsContainer = document.getElementById("resultsContainer");
-
-    // 🔹 ADATOK LEKÉRÉSE AZ API-BÓL
-    async function fetchCars() {
+    // Adatok betöltése az API-ból
+    async function fetchData(url) {
         try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error("Nem sikerült az adatok lekérése.");
-
-            cars = await response.json(); // JSON konvertálás
-            populateBrands(); // Márkák feltöltése a legördülő listába
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error("Hálózati hiba!");
+            }
+            return await response.json();
         } catch (error) {
             console.error("Hiba:", error);
-            resultsContainer.innerHTML = "<p class='text-danger text-center'>Hiba történt az adatok betöltése közben.</p>";
         }
     }
 
-    // 🔹 MÁRKÁK LISTÁJÁNAK FELTÖLTÉSE
-    function populateBrands() {
-        const brands = [...new Set(cars.map(car => car.brand))]; // Egyedi márkák
-        brandSelect.innerHTML = '<option value="">Válassz márkát</option>';
-
-        brands.forEach(brand => {
-            const option = document.createElement("option");
-            option.value = brand;
-            option.textContent = brand;
-            brandSelect.appendChild(option);
+    // Márkák betöltése
+    async function loadManufacturers() {
+        const manufacturers = await fetchData("http://localhost:5005/manufacturers");
+        brandSelect.innerHTML = `<option value="">-- Válassz márkát --</option>`;
+        manufacturers.forEach(m => {
+            brandSelect.innerHTML += `<option value="${m.Id}">${m.Name}</option>`;
         });
     }
 
-    // 🔹 MODELL LISTA DINAMIKUS BETÖLTÉSE MÁRKA ALAPJÁN
-    brandSelect.addEventListener("change", function () {
-        modelSelect.innerHTML = '<option value="">Előbb válassz egy márkát</option>';
-        const selectedBrand = brandSelect.value;
-        const models = [...new Set(cars.filter(car => car.brand === selectedBrand).map(car => car.model))];
-
-        models.forEach(model => {
-            const option = document.createElement("option");
-            option.value = model;
-            option.textContent = model;
-            modelSelect.appendChild(option);
+    // Modellek betöltése a kiválasztott márka alapján
+    async function loadModels(manufacturerId) {
+        const models = await fetchData(`http://localhost:5005/models?manufacturerId=${manufacturerId}`);
+        modelSelect.innerHTML = `<option value="">-- Válassz modellt --</option>`;
+        models.forEach(m => {
+            modelSelect.innerHTML += `<option value="${m.Id}">${m.Name}</option>`;
         });
-        modelSelect.disabled = models.length === 0;
+    }
+
+    // Üzemanyagtípusok betöltése
+    async function loadFuelTypes() {
+        const fuelTypes = await fetchData("http://localhost:5005/fueltypes");
+        fuelTypeSelect.innerHTML = `<option value="">-- Válassz üzemanyagot --</option>`;
+        fuelTypes.forEach(f => {
+            fuelTypeSelect.innerHTML += `<option value="${f.Id}">${f.Name}</option>`;
+        });
+    }
+
+    // Autók szűrése a kiválasztott paraméterek alapján
+    async function filterCars() {
+        const manufacturerId = brandSelect.value;
+        const modelId = modelSelect.value;
+        const fuelTypeId = fuelTypeSelect.value;
+
+        const url = `http://localhost:5005/cars?manufacturerId=${manufacturerId}&modelId=${modelId}&fuelTypeId=${fuelTypeId}`;
+        const cars = await fetchData(url);
+
+        carList.innerHTML = ""; // Előző lista törlése
+        if (cars.length === 0) {
+            carList.innerHTML = "<p>Nincs találat.</p>";
+            return;
+        }
+
+        cars.forEach(car => {
+            carList.innerHTML += `
+                <div class="car-item">
+                    <h3>${car.Manufacturer} ${car.ModelName}</h3>
+                    <p>Üzemanyag: ${car.FuelType}</p>
+                    <p>KM: ${car.Km} km</p>
+                    <p>Ár: ${car.PricePerKm} Ft/km</p>
+                </div>
+            `;
+        });
+    }
+
+    // Eseményfigyelők
+    brandSelect.addEventListener("change", () => {
+        if (brandSelect.value) {
+            loadModels(brandSelect.value);
+        } else {
+            modelSelect.innerHTML = `<option value="">-- Válassz modellt --</option>`;
+        }
     });
 
-    // 🔹 AUTÓK SZŰRÉSE A MEGADOTT FELTÉTELEK ALAPJÁN
-    function filterCars() {
-        const brand = brandSelect.value;
-        const model = modelSelect.value;
-        const fromYear = parseInt(yearFrom.value) || 0;
-        const toYear = parseInt(yearTo.value) || 9999;
-        const fuel = fuelTypeFilter.value;
+    filterButton.addEventListener("click", filterCars);
 
-        return cars.filter(car =>
-            (!brand || car.brand === brand) &&
-            (!model || car.model === model) &&
-            (car.year >= fromYear && car.year <= toYear) &&
-            (!fuel || car.fuel === fuel)
-        );
-    }
+    // Kezdeti adatok betöltése
+    await loadManufacturers();
+    await loadFuelTypes();
+
+
 
     // 🔹 KERESÉS INDÍTÁSA ÉS EREDMÉNYEK MEGJELENÍTÉSE
     searchForm.addEventListener("submit", function (event) {
