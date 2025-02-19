@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const modelSelect = document.getElementById("modelSelect");
     const yearSelect = document.getElementById("year-filter");
     const fuelTypeSelect = document.getElementById("fuelTypeFilter");
-    const carList = document.getElementById("car-list");
+    const carList = document.getElementById("resultsContainer");
     const filterButton = document.getElementById("filterButton");
 
     let cars = [];
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 fetch("http://localhost:5005/cars"),
                 fetch("http://localhost:5005/manufacturers"),
                 fetch("http://localhost:5005/models"),
-                fetch("http://localhost:5005/fueltypes"),
+                fetch("http://localhost:5005/fuel_types"),
             ]);
 
             cars = await carsRes.json();
@@ -90,31 +90,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 🔹 Keresés gomb eseménykezelő
-    filterButton.addEventListener("click", () => {
+    
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        resultsContainer.innerHTML = "";
         const selectedManufacturer = manufacturerSelect.value;
         const selectedModel = modelSelect.value;
-        const selectedYear = yearSelect.value;
         const selectedFuelType = fuelTypeSelect.value;
 
         const filteredCars = cars.filter(car =>
             (!selectedManufacturer || car.manufacturerId == selectedManufacturer) &&
             (!selectedModel || car.modelId == selectedModel) &&
-            (!selectedYear || car.year == selectedYear) &&
             (!selectedFuelType || car.fuelTypeId == selectedFuelType)
-        );
-
-        displayCars(filteredCars);
+        )
+        const results = filteredCars;
+    
+        if (results.length <1) {
+            resultsContainer.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
+        } else {
+            results.forEach((car, index) => {
+                const uniqueId = `carousel-${index}`; // Egyedi azonosító generálása minden autóhoz
+    
+                const card = document.createElement("div");
+                card.classList.add("col-md-4", "mb-3");
+                card.innerHTML = `
+                    <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card" 
+                        data-brand="${car.ManufacturerName}" 
+                        data-model="${car.ModelName}" 
+                        data-year="${car.year}" 
+                        data-fuel="${car.fuelTypeId}" 
+                        
+    
+                        
+    
+                        <div class="card-body">
+                            <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
+                            <p class="card-text">Évjárat: ${car.year}</p>
+                            <p class="card-text">Üzemanyag: ${car.FuelTypeName}</p>
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        }
     });
 
-    // 🔹 Találatok megjelenítése
-    function displayCars(filteredCars) {
-        carList.innerHTML = "";
-        filteredCars.forEach(car => {
-            const carItem = document.createElement("li");
-            carItem.textContent = `${car.ManufacturerName} ${car.ModelName} (${car.year}) - ${car.FuelTypeName}`;
-            carList.appendChild(carItem);
-        });
-    }
+    
+    
 
     
 
