@@ -30,10 +30,13 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener("DOMContentLoaded", async () => {
     const manufacturerSelect = document.getElementById("brandSelect");
     const modelSelect = document.getElementById("modelSelect");
-    const yearSelect = document.getElementById("year-filter");
     const fuelTypeSelect = document.getElementById("fuelTypeFilter");
     const carList = document.getElementById("resultsContainer");
-    const filterButton = document.getElementById("filterButton");
+    const searchForm = document.getElementById("searchForm");
+    const modalContent = document.getElementById("modalContent");
+    const modalElement = document.getElementById("carModal");
+modalElement.removeAttribute("aria-hidden"); 
+modalElement.setAttribute("inert", "false"); 
 
     let cars = [];
     let manufacturers = [];
@@ -42,12 +45,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchData() {
         try {
-            // 🔹 Adatok lekérése külön API végpontokból
             const [carsRes, manufacturersRes, modelsRes, fuelTypeRes] = await Promise.all([
                 fetch("http://localhost:5005/cars"),
                 fetch("http://localhost:5005/manufacturers"),
                 fetch("http://localhost:5005/models"),
-                fetch("http://localhost:5005/fuel_types"),
+                fetch("http://localhost:5005/fuel_types"), 
             ]);
 
             cars = await carsRes.json();
@@ -55,62 +57,103 @@ document.addEventListener("DOMContentLoaded", async () => {
             models = await modelsRes.json();
             fuelTypes = await fuelTypeRes.json();
 
-            // 🔹 Összepárosítás ID alapján
+            console.log("Autók:", cars);
+            console.log("Márkák:", manufacturers);
+            console.log("Modellek:", models);
+            console.log("Üzemanyag típusok:", fuelTypes);
+
             cars.forEach(car => {
-                car.ManufacturerName = manufacturers.find(m => m.id === car.manufacturerId)?.name || "Ismeretlen";
-                car.ModelName = models.find(m => m.id === car.modelId)?.name || "Ismeretlen";
-                car.FuelTypeName = fuelTypes.find(f => f.id === car.fuelTypeId)?.name || "Ismeretlen";
+                const model = models.find(m => m.id === car.modelId);
+                car.ModelName = model ? model.name : "Ismeretlen";
+
+                const manufacturer = model ? manufacturers.find(m => m.id === model.manufacturerId) : null;
+                car.ManufacturerName = manufacturer ? manufacturer.name : "Ismeretlen";
+
+                const fuelType = fuelTypes.find(f => f.id === car.fuelTypeId);
+                car.FuelTypeName = fuelType ? fuelType.name : "Ismeretlen";
             });
 
-            // 🔹 Select elemek feltöltése
             populateSelect(manufacturerSelect, manufacturers);
             populateSelect(fuelTypeSelect, fuelTypes);
+            updateModelSelect();
 
         } catch (error) {
             console.error("Hiba a fetch közben: ", error);
         }
     }
+    manufacturerSelect.addEventListener("change", (event) => {
+        const selectedManufacturer = event.target.value;
+        
+        console.log("Kiválasztott márka ID:", selectedManufacturer);
+        
+        const filteredModels = models.filter(model => 
+            !selectedManufacturer || model.manufacturerId == selectedManufacturer
+        );
+    
+        console.log("Frissített modellek:", filteredModels);
+    
+        populateSelect(modelSelect, filteredModels);
+    });
+    
+    
 
-    // 🔹 Select menük feltöltése
     function populateSelect(selectElement, items) {
         selectElement.innerHTML = "<option value=''>Összes</option>";
+        
         items.forEach(item => {
+            console.log("Hozzáadott márka:", item); // Ellenőrzés konzolban
             const option = document.createElement("option");
-            option.value = item.id;
+            option.value = item.id; // Fontos: ID beállítása
             option.textContent = item.name;
             selectElement.appendChild(option);
         });
     }
-
-    // 🔹 Márka választás → modellek szűrése
-    manufacturerSelect.addEventListener("change", () => {
-        const selectedManufacturer = manufacturerSelect.value;
-        const filteredModels = models.filter(model => !selectedManufacturer || model.manufacturerId == selectedManufacturer);
-        populateSelect(modelSelect, filteredModels);
-    });
-
-    // 🔹 Keresés gomb eseménykezelő
     
+    
+
+    function updateModelSelect() {
+        const selectedManufacturer = manufacturerSelect.value;
+        modelSelect.innerHTML = "<option value=''>Összes</option>";
+
+        const filteredModels = models.filter(model => 
+            model.manufacturerId == selectedManufacturer
+        );
+
+        filteredModels.forEach(model => {
+            const option = document.createElement("option");
+            option.value = model.id;
+            option.textContent = model.name;
+            modelSelect.appendChild(option);
+        });
+
+        console.log("Frissített modellek:", filteredModels);
+    }
+
+    manufacturerSelect.addEventListener("change", updateModelSelect);
+
     searchForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        resultsContainer.innerHTML = "";
+        carList.innerHTML = "";
+
         const selectedManufacturer = manufacturerSelect.value;
         const selectedModel = modelSelect.value;
         const selectedFuelType = fuelTypeSelect.value;
 
+        console.log("Kiválasztott márka:", selectedManufacturer);
+        console.log("Kiválasztott modell:", selectedModel);
+
         const filteredCars = cars.filter(car =>
-            (!selectedManufacturer || car.manufacturerId == selectedManufacturer) &&
+            (!selectedManufacturer || models.find(m => m.id === car.modelId)?.manufacturerId == selectedManufacturer) &&
             (!selectedModel || car.modelId == selectedModel) &&
             (!selectedFuelType || car.fuelTypeId == selectedFuelType)
-        )
-        const results = filteredCars;
-    
-        if (results.length <1) {
-            resultsContainer.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
+        );
+
+        console.log("Szűrt autók:", filteredCars);
+
+        if (filteredCars.length < 1) {
+            carList.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
         } else {
-            results.forEach((car, index) => {
-                const uniqueId = `carousel-${index}`; // Egyedi azonosító generálása minden autóhoz
-    
+            filteredCars.forEach((car, index) => {
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
@@ -118,11 +161,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         data-brand="${car.ManufacturerName}" 
                         data-model="${car.ModelName}" 
                         data-year="${car.year}" 
-                        data-fuel="${car.fuelTypeId}" 
+                        data-fuel="${car.fuelTypeId}">
                         
-    
-                        
-    
                         <div class="card-body">
                             <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
                             <p class="card-text">Évjárat: ${car.year}</p>
@@ -130,18 +170,59 @@ document.addEventListener("DOMContentLoaded", async () => {
                         </div>
                     </div>
                 `;
-                resultsContainer.appendChild(card);
+                carList.appendChild(card);
+                card.addEventListener("click", () => showCarDetails(car));
             });
         }
+       
     });
+    // 🔹 Keresési eredmények megjelenítése
 
-    
-    
+// 🔹 Részletes nézet megjelenítése
+function showCarDetails(car) {
+    // Előző modal törlése, ha van
+    const existingModal = document.getElementById("carModal");
+    if (existingModal) existingModal.remove(); 
 
-    
+    // Új modal létrehozása
+    const modalHTML = `
+    <div class="modal fade show" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-modal="true" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-white" id="carModalLabel bg-white">${car.ManufacturerName} ${car.ModelName}</h5>
+                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                </div>
+                <div class="modal-body bg-primary text-white">
+                    <p><strong>Évjárat:</strong> ${car.year}</p>
+                    <p><strong>Üzemanyag:</strong> ${car.FuelTypeName}</p>
+                </div>
+            </div>
+        </div>
+    </div>`;
 
-    // 🔹 Adatok lekérése és UI feltöltése
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    // Bootstrap modal inicializálása
+    const modalInstance = new bootstrap.Modal(document.getElementById("carModal"));
+    modalInstance.show();
+}
+
+
+
+// 🔹 Részletes nézet bezárása
+function closeCarDetails() {
+    document.getElementById("carDetails").style.display = "none";
+}
+
     await fetchData();
 });
+
+
+    
+    
+
+    
+
 
 
