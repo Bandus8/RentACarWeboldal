@@ -81,6 +81,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 
                 const category = categories.find(c => c.id === car.categoryId);
                 car.categoryName = category ? category.name : "Ismeretlen";
+
+                const description = cars.find(d => d.description === car.description);
+                
             });
             
 
@@ -240,6 +243,7 @@ function showCarDetails(car) {
                 <div class="modal-body bg-primary text-white">
                     <p><strong>Évjárat:</strong> ${car.year}</p>
                     <p><strong>Üzemanyag:</strong> ${car.FuelTypeName}</p>
+                    <p><strong>Leírás:</strong> ${car.description}</p>
                 </div>
             </div>
         </div>
