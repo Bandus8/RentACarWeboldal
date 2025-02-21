@@ -108,15 +108,12 @@
                         <div class="col-md-6">
                             <label for="brandSelect" class="form-label">Márka</label>
                             <select id="brandSelect" class="form-select">
-                                <option value="" selected>Válassz márkát</option>
-                                <option value="Toyota">Toyota</option>
-                                <option value="BMW">BMW</option>
-                                <option value="Mercedes">Mercedes</option>
+                                
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="modelSelect" class="form-label">Modellek</label>
-                            <select id="modelSelect" class="form-select" disabled>
+                            <select id="modelSelect" class="form-select">
                                 <option value="" selected>Előbb válassz egy márkát</option>
                             </select>
                         </div>
@@ -138,15 +135,12 @@
                             <label for="fuelTypeFilter" class="form-label">Üzemanyag fajta</label>
                             <select class="form-select" id="fuelTypeFilter">
                                 <option value="" selected>Válasszon...</option>
-                                <option value="benzin">Benzin</option>
-                                <option value="dízel">Dízel</option>
-                                <option value="hibrid">Hibrid</option>
-                                <option value="elektromos">Elektromos</option>
+                               
                             </select>
                         </div>
                     </div>
                     <div class="text-center mt-4">
-                        <button type="submit" class="btn bg-primary text-white">Szűrés</button>
+                        <button type="submit" class="btn bg-primary text-white" id="filterButton">Szűrés</button>
                     </div>
                 </form>
                 <div id="resultsContainer" class="row mt-4"></div>

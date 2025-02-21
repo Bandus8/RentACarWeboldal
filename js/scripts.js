@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
     },700); // 2 másodperces várakozás után
 });
 
+
 document.addEventListener("DOMContentLoaded", async () => {
     const manufacturerSelect = document.getElementById("brandSelect");
     const modelSelect = document.getElementById("modelSelect");
@@ -35,32 +36,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     const searchForm = document.getElementById("searchForm");
     const modalContent = document.getElementById("modalContent");
     const modalElement = document.getElementById("carModal");
-modalElement.removeAttribute("aria-hidden"); 
-modalElement.setAttribute("inert", "false"); 
+    modalElement.removeAttribute("aria-hidden"); 
+    modalElement.setAttribute("inert", "false"); 
+    const page = window.location.pathname.split("/").pop(); 
+    const filterButton = document.getElementById("filterButton");
 
     let cars = [];
     let manufacturers = [];
     let models = [];
     let fuelTypes = [];
+    let categories = [];
 
     async function fetchData() {
         try {
-            const [carsRes, manufacturersRes, modelsRes, fuelTypeRes] = await Promise.all([
+            const [carsRes, manufacturersRes, modelsRes, fuelTypeRes, categoryRes] = await Promise.all([
                 fetch("http://localhost:5005/cars"),
                 fetch("http://localhost:5005/manufacturers"),
                 fetch("http://localhost:5005/models"),
                 fetch("http://localhost:5005/fuel_types"), 
+                fetch("http://localhost:5005/categories")
             ]);
 
             cars = await carsRes.json();
             manufacturers = await manufacturersRes.json();
             models = await modelsRes.json();
             fuelTypes = await fuelTypeRes.json();
+            categories = await categoryRes.json();
 
             console.log("Autók:", cars);
             console.log("Márkák:", manufacturers);
             console.log("Modellek:", models);
             console.log("Üzemanyag típusok:", fuelTypes);
+            console.log("Kategóriák:", categories );
 
             cars.forEach(car => {
                 const model = models.find(m => m.id === car.modelId);
@@ -71,14 +78,29 @@ modalElement.setAttribute("inert", "false");
 
                 const fuelType = fuelTypes.find(f => f.id === car.fuelTypeId);
                 car.FuelTypeName = fuelType ? fuelType.name : "Ismeretlen";
+                
+                const category = categories.find(c => c.id === car.categoryId);
+                car.categoryName = category ? category.name : "Ismeretlen";
             });
+            
 
             populateSelect(manufacturerSelect, manufacturers);
             populateSelect(fuelTypeSelect, fuelTypes);
             updateModelSelect();
+            if (page === "hetkoznapi.html") selectedCategory = 3;
+            else if (page === "luxus.html") selectedCategory = 1;
+            else if (page === "sport.html") selectedCategory = 2;
+            console.log("Kategória", selectedCategory);
 
         } catch (error) {
             console.error("Hiba a fetch közben: ", error);
+        }
+        updateFilterButton(cars.length);
+        function updateFilterButton(carCount) {
+            const filterButton = document.getElementById("filterButton");
+            if (filterButton) {
+                filterButton.innerText = `Szűrés ${carCount} autó közül`;
+            }
         }
     }
     manufacturerSelect.addEventListener("change", (event) => {
@@ -141,14 +163,17 @@ modalElement.setAttribute("inert", "false");
 
         console.log("Kiválasztott márka:", selectedManufacturer);
         console.log("Kiválasztott modell:", selectedModel);
+        
 
         const filteredCars = cars.filter(car =>
             (!selectedManufacturer || models.find(m => m.id === car.modelId)?.manufacturerId == selectedManufacturer) &&
             (!selectedModel || car.modelId == selectedModel) &&
-            (!selectedFuelType || car.fuelTypeId == selectedFuelType)
+            (!selectedFuelType || car.fuelTypeId == selectedFuelType)&&
+            (!selectedCategory || car.categoryId == selectedCategory)
         );
 
         console.log("Szűrt autók:", filteredCars);
+        
 
         if (filteredCars.length < 1) {
             carList.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
@@ -184,6 +209,7 @@ function showCarDetails(car) {
     const existingModal = document.getElementById("carModal");
     if (existingModal) existingModal.remove(); 
 
+
     // Új modal létrehozása
     const modalHTML = `
     <div class="modal fade show" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-modal="true" role="dialog" style="display:block;">
@@ -193,13 +219,31 @@ function showCarDetails(car) {
                     <h5 class="modal-title text-white" id="carModalLabel bg-white">${car.ManufacturerName} ${car.ModelName}</h5>
                     <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
                 </div>
+               <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 2">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselModal" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
                 <div class="modal-body bg-primary text-white">
                     <p><strong>Évjárat:</strong> ${car.year}</p>
                     <p><strong>Üzemanyag:</strong> ${car.FuelTypeName}</p>
                 </div>
             </div>
         </div>
-    </div>`;
+    </div>`; 
 
     document.body.insertAdjacentHTML("beforeend", modalHTML);
 
