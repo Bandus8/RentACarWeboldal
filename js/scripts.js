@@ -87,9 +87,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             populateSelect(manufacturerSelect, manufacturers);
             populateSelect(fuelTypeSelect, fuelTypes);
             updateModelSelect();
-            if (page === "hetkoznapi.html") selectedCategory = 3;
-            else if (page === "luxus.html") selectedCategory = 1;
-            else if (page === "sport.html") selectedCategory = 2;
+            if (page === "hetkoznapi.html") selectedCategory = 1;
+            else if (page === "luxus.html") selectedCategory = 2;
+            else if (page === "sport.html") selectedCategory = 3;
             console.log("Kategória", selectedCategory);
 
         } catch (error) {
