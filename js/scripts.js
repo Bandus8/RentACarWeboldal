@@ -83,6 +83,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 car.categoryName = category ? category.name : "Ismeretlen";
 
                 const description = cars.find(d => d.description === car.description);
+                const HorsePower = cars.find(d => d.HorsePower === car.HorsePower);
+                const PricePerKm = cars.find(d => d.PricePerKm === car.PricePerKm);
+                const Year = cars.find(d => d.Year === car.Year);
                 
             });
             
@@ -186,6 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
                     <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card" 
+                    
                         data-brand="${car.ManufacturerName}" 
                         data-model="${car.ModelName}" 
                         data-year="${car.year}" 
@@ -193,6 +197,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         
                         <div class="card-body">
                             <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
+                            <div class="carousel-item">
+                        <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 2">
+                    </div>
                             <p class="card-text">Évjárat: ${car.year}</p>
                             <p class="card-text">Üzemanyag: ${car.FuelTypeName}</p>
                         </div>
@@ -240,11 +247,17 @@ function showCarDetails(car) {
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-                <div class="modal-body bg-primary text-white">
+            <div class="row">
+                <div class="modal-body bg-primary text-white col-md-6">
                     <p><strong>Évjárat:</strong> ${car.year}</p>
                     <p><strong>Üzemanyag:</strong> ${car.FuelTypeName}</p>
+                    <p><strong>Lóerő:</strong> ${car.HorsePower}</p>
+                    <p><strong>Kilométerenkénti bérleti díj:</strong> ${car.PricePerKM}</p>
+                </div>
+                <div class="modal-body bg-primary text-white col-md-6">
                     <p><strong>Leírás:</strong> ${car.description}</p>
                 </div>
+            </div>
             </div>
         </div>
     </div>`; 
