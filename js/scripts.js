@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const horsePower = cars.find(h => h.horsePower === car.horsePower);
                 const pricePerKm = cars.find(p => p.pricePerKm === car.pricePerKm);
                 
-                const years = cars.map(car => car.year);
+                const years = cars.map(car => car.Year);
                 const minYear = Math.min(...years);
                 const maxYear = Math.max(...years);
                 
@@ -98,11 +98,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             populateSelect(manufacturerSelect, manufacturers);
             populateSelect(fuelTypeSelect, fuelTypes);
             updateModelSelect();
-            populateYearSelect(minYear, maxYear);
             if (page === "hetkoznapi.html") selectedCategory = 1;
             else if (page === "luxus.html") selectedCategory = 2;
             else if (page === "sport.html") selectedCategory = 3;
             console.log("Kategória", selectedCategory);
+            populateYearSelect(minYear, maxYear);
 
         } catch (error) {
             console.error("Hiba a fetch közben: ", error);
@@ -131,10 +131,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     
     function populateYearSelect(minYear, maxYear) {
-        for (let year = maxYear; year >= minYear; year--) {
-            yearFromSelect.innerHTML += `<option value="${year}">${year}</option>`;
-            yearToSelect.innerHTML += `<option value="${year}">${year}</option>`;
-        }
+        yearFromSelect.innerHTML += "<option value=''>Összes</option>";
+        yearToSelect.innerHTML += "<option value=''>Összes</option>";
+            yearFromSelect.innerHTML += `<option value="${minYear}">${minYear}</option>`;
+            yearToSelect.innerHTML += `<option value="${maxYear}">${maxYear}</option>`;
     }
 
     function populateSelect(selectElement, items) {
