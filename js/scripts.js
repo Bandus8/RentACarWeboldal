@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     modalElement.setAttribute("inert", "false"); 
     const page = window.location.pathname.split("/").pop(); 
     const filterButton = document.getElementById("filterButton");
+    const yearFromSelect = document.getElementById("yearFrom");
+    const yearToSelect = document.getElementById("yearTo");
 
     let cars = [];
     let manufacturers = [];
@@ -83,16 +85,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 car.categoryName = category ? category.name : "Ismeretlen";
 
                 const description = cars.find(d => d.description === car.description);
-                const HorsePower = cars.find(d => d.HorsePower === car.HorsePower);
-                const PricePerKm = cars.find(d => d.PricePerKm === car.PricePerKm);
-                const Year = cars.find(d => d.Year === car.Year);
+                const horsePower = cars.find(h => h.horsePower === car.horsePower);
+                const pricePerKm = cars.find(p => p.pricePerKm === car.pricePerKm);
+                
+                const years = cars.map(car => car.year);
+                const minYear = Math.min(...years);
+                const maxYear = Math.max(...years);
                 
             });
             
-
+            
             populateSelect(manufacturerSelect, manufacturers);
             populateSelect(fuelTypeSelect, fuelTypes);
             updateModelSelect();
+            populateYearSelect(minYear, maxYear);
             if (page === "hetkoznapi.html") selectedCategory = 1;
             else if (page === "luxus.html") selectedCategory = 2;
             else if (page === "sport.html") selectedCategory = 3;
@@ -124,6 +130,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     
     
+    function populateYearSelect(minYear, maxYear) {
+        for (let year = maxYear; year >= minYear; year--) {
+            yearFromSelect.innerHTML += `<option value="${year}">${year}</option>`;
+            yearToSelect.innerHTML += `<option value="${year}">${year}</option>`;
+        }
+    }
 
     function populateSelect(selectElement, items) {
         selectElement.innerHTML = "<option value=''>Összes</option>";
@@ -189,22 +201,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
                     <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card" 
-                    
-                        data-brand="${car.ManufacturerName}" 
-                        data-model="${car.ModelName}" 
-                        data-year="${car.year}" 
-                        data-fuel="${car.fuelTypeId}">
-                        
-                        <div class="card-body">
-                            <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
-                            <div class="carousel-item">
-                        <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 2">
-                    </div>
-                            <p class="card-text">Évjárat: ${car.year}</p>
-                            <p class="card-text">Üzemanyag: ${car.FuelTypeName}</p>
+
+                    <!-- Egyedi carousel minden autóhoz -->
+                    <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    ${(car.images && car.images.length > 0) ? car.images.map((img, imgIndex) => `
+                        <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+                            <img src="${img}" class="d-block w-100 rounded" alt="Car image">
                         </div>
+                    `).join('') : `
+                        <div class="carousel-item active">
+                            <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image">
+                        </div>`}
+                </div>
+                <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Előző</span>
+                </button>
+                <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#carouselModal" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Következő</span>
+                </button>
+            </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
+                        <p class="card-text">Évjárat: ${car.year}</p>
+                        <p class="card-text">Üzemanyag: ${car.FuelTypeName}</p>
+                        <p class="card-text">Kilométerenkénti díj: ${car.pricePerKm} FT</p>
                     </div>
-                `;
+                </div>
+            `;
                 carList.appendChild(card);
                 card.addEventListener("click", () => showCarDetails(car));
             });
@@ -222,14 +249,18 @@ function showCarDetails(car) {
 
     // Új modal létrehozása
     const modalHTML = `
-    <div class="modal fade show" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-modal="true" role="dialog" style="display:block;">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-dark">
-                    <h5 class="modal-title text-white" id="carModalLabel bg-white">${car.ManufacturerName} ${car.ModelName}</h5>
-                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
-                </div>
-               <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
+<div class="modal fade show" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-modal="true" role="dialog" style="display:block;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Fejléc -->
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="carModalLabel">${car.ManufacturerName} ${car.ModelName}</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+            </div>
+
+            <!-- Carousel -->
+            <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 1">
@@ -247,20 +278,26 @@ function showCarDetails(car) {
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-            <div class="row">
-                <div class="modal-body bg-primary text-white col-md-6">
-                    <p><strong>Évjárat:</strong> ${car.year}</p>
-                    <p><strong>Üzemanyag:</strong> ${car.FuelTypeName}</p>
-                    <p><strong>Lóerő:</strong> ${car.HorsePower}</p>
-                    <p><strong>Kilométerenkénti bérleti díj:</strong> ${car.PricePerKM}</p>
-                </div>
-                <div class="modal-body bg-primary text-white col-md-6">
-                    <p><strong>Leírás:</strong> ${car.description}</p>
+
+            <!-- Részletek -->
+            <div class="modal-body bg-primary text-white">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Évjárat:</strong> ${car.year}</p>
+                        <p><strong>Üzemanyag:</strong> ${car.FuelTypeName}</p>
+                        <p><strong>Lóerő:</strong> ${car.horsePower}</p>
+                        <p><strong>Kilométerenkénti bérleti díj:</strong> ${car.pricePerKm} FT</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Leírás:</strong> ${car.description}</p>
+                    </div>
                 </div>
             </div>
-            </div>
+
         </div>
-    </div>`; 
+    </div>
+</div>`;
+ 
 
     document.body.insertAdjacentHTML("beforeend", modalHTML);
 
