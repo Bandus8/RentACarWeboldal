@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let models = [];
     let fuelTypes = [];
     let categories = [];
+    let minYear = 0;
+    let maxYear = 0;
+    
 
     async function fetchData() {
         try {
@@ -88,9 +91,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const horsePower = cars.find(h => h.horsePower === car.horsePower);
                 const pricePerKm = cars.find(p => p.pricePerKm === car.pricePerKm);
                 
-                const years = cars.map(car => car.Year);
-                const minYear = Math.min(...years);
-                const maxYear = Math.max(...years);
+                const years = cars.map(car => car.year);
+                minYear = Math.min(...years);
+                maxYear = Math.max(...years);
+                
                 
             });
             
@@ -101,9 +105,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (page === "hetkoznapi.html") selectedCategory = 1;
             else if (page === "luxus.html") selectedCategory = 2;
             else if (page === "sport.html") selectedCategory = 3;
-            console.log("Kategória", selectedCategory);
             populateYearSelect(minYear, maxYear);
 
+            console.log("Kategória", selectedCategory);
+            
         } catch (error) {
             console.error("Hiba a fetch közben: ", error);
         }
@@ -131,11 +136,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     
     function populateYearSelect(minYear, maxYear) {
-        yearFromSelect.innerHTML += "<option value=''>Összes</option>";
-        yearToSelect.innerHTML += "<option value=''>Összes</option>";
-            yearFromSelect.innerHTML += `<option value="${minYear}">${minYear}</option>`;
-            yearToSelect.innerHTML += `<option value="${maxYear}">${maxYear}</option>`;
-    }
+        
+        const feltoltes = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
+
+        const allyears = feltoltes(minYear,maxYear);
+      
+        console.log('évek', allyears.length);
+
+        for (let index = 0; index < allyears.length; index++) {
+            const element = allyears[index];
+           
+            let a = document.createElement("option")
+            let b = document.createElement("option")
+
+            let year = allyears[index]
+a.textContent = year
+b.textContent = "asdgdshfhdsjghdshfdshgdsjgiojhgh"
+
+            yearToSelect.appendChild(a)
+            yearFromSelect.appendChild(b)
+        }
+        
+    };
 
     function populateSelect(selectElement, items) {
         selectElement.innerHTML = "<option value=''>Összes</option>";
@@ -178,6 +200,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const selectedManufacturer = manufacturerSelect.value;
         const selectedModel = modelSelect.value;
         const selectedFuelType = fuelTypeSelect.value;
+        const minSelectedYear = yearFromSelect.value;
+        const maySelectedYear = yearToSelect.value;
 
         console.log("Kiválasztott márka:", selectedManufacturer);
         console.log("Kiválasztott modell:", selectedModel);
@@ -187,7 +211,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             (!selectedManufacturer || models.find(m => m.id === car.modelId)?.manufacturerId == selectedManufacturer) &&
             (!selectedModel || car.modelId == selectedModel) &&
             (!selectedFuelType || car.fuelTypeId == selectedFuelType)&&
-            (!selectedCategory || car.categoryId == selectedCategory)
+            (!selectedCategory || car.categoryId == selectedCategory)&&
+            (minSelectedYear >= car.year && maySelectedYear <= car.year)
         );
 
         console.log("Szűrt autók:", filteredCars);
