@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (page === "hetkoznapi.html") selectedCategory = 1;
             else if (page === "luxus.html") selectedCategory = 2;
             else if (page === "sport.html") selectedCategory = 3;
-            populateYearSelect(minYear, maxYear);
+            
 
             console.log("Kategória", selectedCategory);
             
@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 filterButton.innerText = `Szűrés ${carCount} autó közül`;
             }
         }
+        populateYearSelect(minYear, maxYear);
     }
     manufacturerSelect.addEventListener("change", (event) => {
         const selectedManufacturer = event.target.value;
@@ -136,26 +137,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     
     function populateYearSelect(minYear, maxYear) {
-        
+        yearFromSelect.innerHTML = `<option value="">Összes</option>`;
+        yearToSelect.innerHTML = `<option value="">Összes</option>`;
+
         const feltoltes = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
         const allyears = feltoltes(minYear,maxYear);
       
         console.log('évek', allyears.length);
-
-        for (let index = 0; index < allyears.length; index++) {
-            const element = allyears[index];
-           
-            let a = document.createElement("option")
-            let b = document.createElement("option")
-
-            let year = allyears[index]
-a.textContent = year
-b.textContent = "asdgdshfhdsjghdshfdshgdsjgiojhgh"
-
-            yearToSelect.appendChild(a)
-            yearFromSelect.appendChild(b)
-        }
+        
+        yearFromSelect.innerHTML += allyears.map(item =>  `<option value="${item}">${item}</option>`).join('');
+        yearToSelect.innerHTML += allyears.map(item =>  `<option value="${item}">${item}</option>`).join('');
+        
         
     };
 
@@ -201,7 +194,7 @@ b.textContent = "asdgdshfhdsjghdshfdshgdsjgiojhgh"
         const selectedModel = modelSelect.value;
         const selectedFuelType = fuelTypeSelect.value;
         const minSelectedYear = yearFromSelect.value;
-        const maySelectedYear = yearToSelect.value;
+        const maxSelectedYear = yearToSelect.value;
 
         console.log("Kiválasztott márka:", selectedManufacturer);
         console.log("Kiválasztott modell:", selectedModel);
@@ -212,7 +205,9 @@ b.textContent = "asdgdshfhdsjghdshfdshgdsjgiojhgh"
             (!selectedModel || car.modelId == selectedModel) &&
             (!selectedFuelType || car.fuelTypeId == selectedFuelType)&&
             (!selectedCategory || car.categoryId == selectedCategory)&&
-            (minSelectedYear >= car.year && maySelectedYear <= car.year)
+            (!minSelectedYear || car.year >= minSelectedYear) &&
+            (!maxSelectedYear || car.year <= maxSelectedYear)
+
         );
 
         console.log("Szűrt autók:", filteredCars);
@@ -317,6 +312,9 @@ function showCarDetails(car) {
                         <p><strong>Leírás:</strong> ${car.description}</p>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center bg-dark">
+                <button type="button" class="btn bg-primary text-white" style="width: 500px font-weight: bold">Kapcsolatfelvétel</button>
             </div>
 
         </div>
