@@ -112,12 +112,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("Hiba a fetch közben: ", error);
         }
-        updateFilterButton(cars.length);
-        function updateFilterButton(carCount) {
+        updateFilterButton(cars);
+        function updateFilterButton(cars) {
             const filterButton = document.getElementById("filterButton");
-            if (filterButton) {
-                filterButton.innerText = `Szűrés ${carCount} autó közül`;
+            hossz = 0;
+            
+            for (let index = 0; index < cars.length; index++) {
+                const element = cars[index];
+                if (cars[index].categoryId == selectedCategory) {
+                    hossz++;
+                }
             }
+            
+            filterButton.innerText = `Szűrés ${hossz} autó közül`;
+            
         }
         populateYearSelect(minYear, maxYear);
     }
@@ -314,13 +322,19 @@ function showCarDetails(car) {
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center bg-dark">
-                <button type="button" class="btn bg-primary text-white" style="width: 500px font-weight: bold">Kapcsolatfelvétel</button>
+                <button type="button" id="kapcsolat" class="btn bg-primary text-white" style="width: 500px font-weight: bold" >Kapcsolatfelvétel</button>
             </div>
 
         </div>
     </div>
 </div>`;
- 
+    
+document.addEventListener('click', (event) => {
+    if (event.target && event.target.id === 'kapcsolat') {
+        window.location.href = 'rolunk.html';
+    }
+});
+
 
     document.body.insertAdjacentHTML("beforeend", modalHTML);
 
