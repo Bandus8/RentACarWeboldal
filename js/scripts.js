@@ -48,13 +48,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     let models = [];
     let fuelTypes = [];
     let categories = [];
+    let images = [];
     let minYear = 0;
     let maxYear = 0;
     
 
     async function fetchData() {
         try {
-            const [carsRes, manufacturersRes, modelsRes, fuelTypeRes, categoryRes] = await Promise.all([
+            const [carsRes, manufacturersRes, modelsRes, fuelTypeRes, categoryRes, imagesRes] = await Promise.all([
                 fetch("http://localhost:5005/cars"),
                 fetch("http://localhost:5005/manufacturers"),
                 fetch("http://localhost:5005/models"),
@@ -97,7 +98,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                 minYear = Math.min(...years);
                 maxYear = Math.max(...years);
                 
-                
+                const ImageURL = [];
+                for (let index = 0; index < images.length; index++) {
+                    const element = images[index];
+                    
+                    if (images[index].carId == car.id) {
+                        ImageURL += images[index].imagePath
+                    }
+
+                }
+
             });
             
             
@@ -275,6 +285,19 @@ function showCarDetails(car) {
     // Előző modal törlése, ha van
     const existingModal = document.getElementById("carModal");
     if (existingModal) existingModal.remove(); 
+    console.log(images.length);
+    kepek = [];
+    
+    console.log(kepek.length);
+    let carouselItems = '';
+    for (let i = 0; i < images.length; i++) {
+    carouselItems += `
+    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+        <img src="${images[i].ImageURL + ".jpg" }" class="d-block w-100" alt="Car Image ${i + 1}">
+    </div>`;
+    console.log(images[i].ImageURL + ".jpg");
+    
+    }
 
 
     // Új modal létrehozása
@@ -292,12 +315,7 @@ function showCarDetails(car) {
             <!-- Carousel -->
             <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 1">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image 2">
-                    </div>
+                    ${carouselItems}
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -324,7 +342,7 @@ function showCarDetails(car) {
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center bg-dark">
-                <button type="button" id="kapcsolat" class="btn bg-primary text-white" style="width: 500px font-weight: bold" >Kapcsolatfelvétel</button>
+                <button type="button" id="kapcsolat" class="btn bg-primary text-white" style="width: 500px; font-weight: bold">Kapcsolatfelvétel</button>
             </div>
 
         </div>
