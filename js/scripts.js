@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 fetch("http://localhost:5005/manufacturers"),
                 fetch("http://localhost:5005/models"),
                 fetch("http://localhost:5005/fuel_types"), 
-                fetch("http://localhost:5005/categories")
+                fetch("http://localhost:5005/categories"),
+                fetch("http://localhost:5005/images")
             ]);
 
             cars = await carsRes.json();
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             models = await modelsRes.json();
             fuelTypes = await fuelTypeRes.json();
             categories = await categoryRes.json();
+            images = await imagesRes.json();
 
             console.log("Autók:", cars);
             console.log("Márkák:", manufacturers);
