@@ -98,15 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 minYear = Math.min(...years);
                 maxYear = Math.max(...years);
                 
-                const ImageURL = [];
-                for (let index = 0; index < images.length; index++) {
-                    const element = images[index];
-                    
-                    if (images[index].carId == car.id) {
-                        ImageURL += images[index].imagePath
-                    }
-
-                }
 
             });
             
@@ -286,16 +277,20 @@ function showCarDetails(car) {
     const existingModal = document.getElementById("carModal");
     if (existingModal) existingModal.remove(); 
     console.log(images.length);
-    kepek = [];
+  
     
-    console.log(kepek.length);
+   
     let carouselItems = '';
     for (let i = 0; i < images.length; i++) {
+        if (images[i].carId == 1) {
     carouselItems += `
     <div class="carousel-item ${i === 0 ? 'active' : ''}">
-        <img src="${images[i].ImageURL + ".jpg" }" class="d-block w-100" alt="Car Image ${i + 1}">
+        <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
     </div>`;
-    console.log(images[i].ImageURL + ".jpg");
+    console.log(images[i].imagePath);
+        }
+        
+   
     
     }
 
@@ -317,14 +312,14 @@ function showCarDetails(car) {
                 <div class="carousel-inner">
                     ${carouselItems}
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselModal" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+                 <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Előző</span>
+        </button>
+        <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Következő</span>
+        </button>
             </div>
 
             <!-- Részletek -->
