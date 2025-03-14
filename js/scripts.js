@@ -237,7 +237,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
                 </div>`;
                 console.log(images[i].imagePath);
-        }
+                }
+            }
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
