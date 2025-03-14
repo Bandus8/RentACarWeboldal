@@ -277,12 +277,10 @@ function showCarDetails(car) {
     const existingModal = document.getElementById("carModal");
     if (existingModal) existingModal.remove(); 
     console.log(images.length);
-  
-    
-   
     let carouselItems = '';
     for (let i = 0; i < images.length; i++) {
-        if (images[i].carId == 1) {
+        console.log(images[i].carId);
+        if (images[i].carId == car.id) {
     carouselItems += `
     <div class="carousel-item ${i === 0 ? 'active' : ''}">
         <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
