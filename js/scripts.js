@@ -228,6 +228,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             carList.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
         } else {
             filteredCars.forEach((car, index) => {
+                let carouselItems = '';
+                for (let i = 0; i < images.length; i++) {
+                    console.log(images[i].carId);
+                    if (images[i].carId == car.id) {
+                carouselItems += `
+                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                    <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
+                </div>`;
+                console.log(images[i].imagePath);
+        }
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
@@ -236,14 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <!-- Egyedi carousel minden autóhoz -->
                     <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    ${(car.images && car.images.length > 0) ? car.images.map((img, imgIndex) => `
-                        <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
-                            <img src="${img}" class="d-block w-100 rounded" alt="Car image">
-                        </div>
-                    `).join('') : `
-                        <div class="carousel-item active">
-                            <img src="https://placehold.co/600x400" class="d-block w-100" alt="Placeholder Image">
-                        </div>`}
+                    ${carouselItems}
                 </div>
                 <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
