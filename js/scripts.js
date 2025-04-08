@@ -229,33 +229,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
             carList.innerHTML = ""; // Ürítsd ki a listát új szűrésnél
         
-            filteredCars.forEach((car) => {
-                // Csak az adott autóhoz tartozó képeket szűrjük ki
-                const carImages = images.filter(img => Number(img.carId) === Number(car.id));
-        
-                // Dinamikus carousel ID minden autóra
-                const carouselId = `carousel-${car.id}`;
-        
-                // Képek betöltése a carouselbe
-                let carouselItems = "";
-                carImages.forEach((img, i) => {
-                    carouselItems += `
-                        <div class="carousel-item ${i === 0 ? "active" : ""}">
-                            <img src="http://localhost:5005/uploads/images/${img.imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
+            filteredCars.forEach((car, index) => {
+                const carouselId = `carousel-card-${car.id}`; // Egyedi azonosító
+            
+                let carouselItems = '';
+                let imgIndex = 0;
+                for (let i = 0; i < images.length; i++) {
+                    if (images[i].carId == car.id) {
+                        carouselItems += `
+                        <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+                            <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" 
+                                 class="d-block mx-auto" 
+                                 style="width: 250; width: 100%;" 
+                                 alt="Car Image ${imgIndex + 1}">
                         </div>`;
-                });
-        
+                        imgIndex++;
+                    }
+                }
+            
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
                     <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card">
-        
-                        <!-- Egyedi carousel minden autóhoz -->
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                ${carouselItems || '<div class="text-center p-3">Nincs kép ehhez az autóhoz.</div>'}
+                                ${carouselItems || '<div class="text-center p-2">Nincs kép</div>'}
                             </div>
-                            ${carImages.length > 1 ? `
                             <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Előző</span>
@@ -263,9 +262,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Következő</span>
-                            </button>` : ""}
+                            </button>
                         </div>
-        
+            
                         <div class="card-body">
                             <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
                             <p class="card-text">Évjárat: ${car.year}</p>
@@ -276,9 +275,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
         
                 carList.appendChild(card);
-        
-                // Részletes nézet megnyitása kattintásra
-                card.addEventListener("click", () => showCarDetails(car));
+    card.addEventListener("click", () => showCarDetails(car));
             });
         }
         
@@ -300,7 +297,7 @@ function showCarDetails(car) {
         if (Number(images[i].carId) === Number(car.id)) {
             carouselItems += `
             <div class="carousel-item ${matchingImageCount === 0 ? 'active' : ''}">
-                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" alt="Car Image ${matchingImageCount + 1}">
+                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" style="width: 250; width: 100%;" alt="Car Image ${matchingImageCount + 1}">
             </div>`;
             matchingImageCount++;
         }
