@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div class="carousel-item ${i === 0 ? 'active' : ''}">
                     <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
                 </div>`;
-                console.log(images[i].imagePath);
+                
                 }
             }
                 const card = document.createElement("div");
