@@ -277,27 +277,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // 🔹 Részletes nézet megjelenítése
 function showCarDetails(car) {
-    // Előző modal törlése, ha van
+    // Előző modal törlése
     const existingModal = document.getElementById("carModal");
-    if (existingModal) existingModal.remove(); 
-    console.log(images.length);
+    if (existingModal) existingModal.remove();
+
     let carouselItems = '';
+    let matchingImageCount = 0; // Csak a car.id-hez passzoló képek számlálása
+
     for (let i = 0; i < images.length; i++) {
-        console.log(images[i].carId);
-        if (images[i].carId == car.id) {
-    carouselItems += `
-    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-        <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
-    </div>`;
-    console.log(images[i].imagePath);
+        // Típus biztos összehasonlítás
+        if (Number(images[i].carId) === Number(car.id)) {
+            carouselItems += `
+            <div class="carousel-item ${matchingImageCount === 0 ? 'active' : ''}">
+                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" alt="Car Image ${matchingImageCount + 1}">
+            </div>`;
+            matchingImageCount++;
         }
-        
-   
-    
     }
 
+    // Dinamikus ID a carouselhez (hogy gombok is hozzá legyenek kötve)
+    const carouselId = `carousel-${car.id}`;
 
-    // Új modal létrehozása
+    // Modal HTML
     const modalHTML = `
 <div class="modal fade show" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-modal="true" role="dialog" style="display:block;">
     <div class="modal-dialog modal-lg">
@@ -310,18 +311,19 @@ function showCarDetails(car) {
             </div>
 
             <!-- Carousel -->
-            <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
+            <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    ${carouselItems}
+                    ${carouselItems || '<div class="text-center p-4">Nincs elérhető kép ehhez az autóhoz.</div>'}
                 </div>
-                 <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Előző</span>
-        </button>
-        <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#carousel-${car.brand}-${car.model}" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Következő</span>
-        </button>
+                ${matchingImageCount > 1 ? `
+                <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Előző</span>
+                </button>
+                <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Következő</span>
+                </button>` : ''}
             </div>
 
             <!-- Részletek -->
@@ -345,6 +347,9 @@ function showCarDetails(car) {
         </div>
     </div>
 </div>`;
+
+
+
     
 document.addEventListener('click', (event) => {
     if (event.target && event.target.id === 'kapcsolat') {
