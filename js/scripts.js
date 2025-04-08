@@ -227,50 +227,61 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (filteredCars.length < 1) {
             carList.innerHTML = "<p class='text-center text-danger'>Nincs találat</p>";
         } else {
-            filteredCars.forEach((car, index) => {
-                let carouselItems = '';
-                for (let i = 0; i < images.length; i++) {
-                    console.log(images[i].carId);
-                    if (images[i].carId == car.id) {
-                carouselItems += `
-                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                    <img src="${"http://localhost:5005/uploads/images/" + images[i].imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
-                </div>`;
-                
-                }
-            }
+            carList.innerHTML = ""; // Ürítsd ki a listát új szűrésnél
+        
+            filteredCars.forEach((car) => {
+                // Csak az adott autóhoz tartozó képeket szűrjük ki
+                const carImages = images.filter(img => Number(img.carId) === Number(car.id));
+        
+                // Dinamikus carousel ID minden autóra
+                const carouselId = `carousel-${car.id}`;
+        
+                // Képek betöltése a carouselbe
+                let carouselItems = "";
+                carImages.forEach((img, i) => {
+                    carouselItems += `
+                        <div class="carousel-item ${i === 0 ? "active" : ""}">
+                            <img src="http://localhost:5005/uploads/images/${img.imagePath}" class="d-block w-100" alt="Car Image ${i + 1}">
+                        </div>`;
+                });
+        
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
                 card.innerHTML = `
-                    <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card" 
-
-                    <!-- Egyedi carousel minden autóhoz -->
-                    <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    ${carouselItems}
-                </div>
-                <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Előző</span>
-                </button>
-                <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#carouselModal" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Következő</span>
-                </button>
-            </div>
-
-                    <div class="card-body">
-                        <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
-                        <p class="card-text">Évjárat: ${car.year}</p>
-                        <p class="card-text">Üzemanyag: ${car.FuelTypeName}</p>
-                        <p class="card-text">Kilométerenkénti díj: ${car.pricePerKm} FT</p>
+                    <div class="clickable-box bg-white p-4 text-center rounded border d-block car-card">
+        
+                        <!-- Egyedi carousel minden autóhoz -->
+                        <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                ${carouselItems || '<div class="text-center p-3">Nincs kép ehhez az autóhoz.</div>'}
+                            </div>
+                            ${carImages.length > 1 ? `
+                            <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Előző</span>
+                            </button>
+                            <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Következő</span>
+                            </button>` : ""}
+                        </div>
+        
+                        <div class="card-body">
+                            <h5 class="card-title">${car.ManufacturerName} ${car.ModelName}</h5>
+                            <p class="card-text">Évjárat: ${car.year}</p>
+                            <p class="card-text">Üzemanyag: ${car.FuelTypeName}</p>
+                            <p class="card-text">Kilométerenkénti díj: ${car.pricePerKm} FT</p>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+        
                 carList.appendChild(card);
+        
+                // Részletes nézet megnyitása kattintásra
                 card.addEventListener("click", () => showCarDetails(car));
             });
         }
+        
        
     });
     // 🔹 Keresési eredmények megjelenítése
