@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
                             <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" 
                                  class="d-block mx-auto" 
-                                 style="width: 250; width: 100%;" 
+                                 style="width: 250; height: 250;" 
                                  alt="Car Image ${imgIndex + 1}">
                         </div>`;
                         imgIndex++;
@@ -297,7 +297,7 @@ function showCarDetails(car) {
         if (Number(images[i].carId) === Number(car.id)) {
             carouselItems += `
             <div class="carousel-item ${matchingImageCount === 0 ? 'active' : ''}">
-                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" style="width: 250; width: 100%;" alt="Car Image ${matchingImageCount + 1}">
+                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" style="width: 300; height: 200;" alt="Car Image ${matchingImageCount + 1}">
             </div>`;
             matchingImageCount++;
         }
