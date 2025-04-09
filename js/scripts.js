@@ -233,19 +233,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const carouselId = `carousel-card-${car.id}`; // Egyedi azonosító
             
                 let carouselItems = '';
-                let imgIndex = 0;
-                for (let i = 0; i < images.length; i++) {
-                    if (images[i].carId == car.id) {
-                        carouselItems += `
-                        <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
-                            <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" 
-                                 class="d-block mx-auto" 
-                                 style="width: 250; height: 250;" 
-                                 alt="Car Image ${imgIndex + 1}">
-                        </div>`;
-                        imgIndex++;
-                    }
-                }
+let imgIndex = 0;
+
+for (let i = 0; i < images.length; i++) {
+    if (images[i].carId == car.id) {
+        carouselItems += `
+        <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+            <div class="image-wrapper">
+                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" 
+                     alt="Car Image ${imgIndex + 1}">
+            </div>
+        </div>`;
+        imgIndex++;
+    }
+}
             
                 const card = document.createElement("div");
                 card.classList.add("col-md-4", "mb-3");
@@ -297,7 +298,7 @@ function showCarDetails(car) {
         if (Number(images[i].carId) === Number(car.id)) {
             carouselItems += `
             <div class="carousel-item ${matchingImageCount === 0 ? 'active' : ''}">
-                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" style="width: 300; height: 200;" alt="Car Image ${matchingImageCount + 1}">
+                <img src="http://localhost:5005/uploads/images/${images[i].imagePath}" class="d-block w-100" alt="Car Image ${matchingImageCount + 1}">
             </div>`;
             matchingImageCount++;
         }
